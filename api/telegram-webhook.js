@@ -1,18 +1,21 @@
 export default async function handler(req, res) {
-  // تەنها داواکاری POST وەردەگرێت
   if (req.method !== "POST") {
-    return res.status(200).json({ ok: true, message: "Webhook path is active" });
+    return res.status(200).json({ status: "ok" });
   }
 
   try {
-    // پەیامەکە دەخوێنێتەوە لە تەلەگرامەوە
     const update = req.body || {};
-    console.log("Telegram update received:", update);
+    
+    // خوێندنەوەی پەیامی تەلەگرام بۆ دڵنیابوون
+    const chatId = update.message?.chat?.id || update.callback_query?.message?.chat?.id;
+    const text = update.message?.text;
 
-    // وەڵامی خێرا و ئەرێنی دەداتەوە تەلەگرام تاوەکو هیچ هەڵەیەک ڕوو نەدات
+    console.log(`Received message: ${text} from chat: ${chatId}`);
+
+    // وەڵامی خێرا بە 200 بۆ ئەوەی تەلەگرام سەرکەوتوو بێت
     return res.status(200).json({ ok: true });
   } catch (error) {
-    console.error("Webhook Error:", error);
+    console.error("Webhook error:", error);
     return res.status(200).json({ ok: true });
   }
 }
